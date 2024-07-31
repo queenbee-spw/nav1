@@ -34,10 +34,16 @@ sidebarOpen.addEventListener("click" , () =>{
     nav.classList.add("active");
 });
 
+siderbarClose.addEventListener("click", () => {
+    nav.classList.remove("active");
+});
+
 body.addEventListener("click" , e =>{
     let clickedElm = e.target;
 
-    if(!clickedElm.classList.contains("sidebarOpen") && !clickedElm.classList.contains("menu")){
+    if (!clickedElm.classList.contains("sidebarOpen") && 
+        !clickedElm.classList.contains("menu") && 
+        !clickedElm.closest('.menu')) {
         nav.classList.remove("active");
     }
 });
@@ -48,8 +54,26 @@ document.addEventListener("DOMContentLoaded", function() {
             dropdownToggles.forEach(toggle => {
                 toggle.addEventListener("click", function(event) {
                     event.preventDefault();
+                    this.classList.toggle("active");
                     const dropdownMenu = this.nextElementSibling;
                     dropdownMenu.classList.toggle("show");
+
+                    // Menutup dropdown lain yang terbuka
+                    dropdownToggles.forEach(otherToggle => {
+                        if (otherToggle !== toggle) {
+                            otherToggle.classList.remove("active");
+                            otherToggle.nextElementSibling.classList.remove("show");
+                        }
+                    });
                 });
+            });
+
+            // Menutup dropdown saat mengklik di luar dropdown
+            document.addEventListener("click", function(event) {
+                if (!event.target.closest('.dropdown')) {
+                    document.querySelectorAll('.dropdown-menu').forEach(menu => {
+                        menu.classList.remove('show');
+                    });
+                }
             });
         });
